@@ -1,0 +1,1275 @@
+<div>
+    <div class="body">
+        <div class="validation"></div>
+
+        <form class="idm-form" onsubmit="return false;">
+            <div class="required-info"><span class="required"></span>Indicates required field</div>
+
+            <div class="idm-form-section">
+                <div class="fourth">
+                    <label for="term-id">Term ID</label>
+                    <span id="term-id" class="term-id" data-source=".goodsServicesTermIdTx"></span>
+                </div>
+
+                <div class="fourth">
+                    <label for="term-stage">Stage</label>
+                    <span id="term-stage" data-source=".termStatusCd" data-decorator="stageDecorator"></span>
+                </div>
+
+                <div class="fourth">
+                    <label for="term-status">Status</label>
+                    <span id="term-status" data-source=".termCt" data-decorator="statusDecorator"></span>
+                </div>
+
+                <div class="fourth">
+                    <label for="term-ncl-version">NCL Version</label>
+                    <span id="term-ncl-version" class="term-ncl-version" data-source=".versionNum"></span>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+
+            <div class="idm-form-section">
+                <label for="term-description"><span class="required"></span> Description</label>
+                <textarea class="description" id="term-description" name="term-description" data-source=".descriptionTx" data-decorator="descriptionDecorator"></textarea>
+            </div>
+
+            <div class="idm-form-section">
+                <ul class="tabs">
+                    <li class="active"><a class="tab-general" href="javascript:void(0)">General</a></li>
+                    <li><a class="tab-employee-notes" href="javascript:void(0)">Employee Notes</a></li>
+                    <li><a class="tab-editor-notes" href="javascript:void(0)">Editor Notes</a></li>
+                    <li><a class="tab-version-history" href="javascript:void(0)">Version History</a></li>
+                    <li><a class="tab-revision-history" href="javascript:void(0)">Revision History</a></li>
+                </ul>
+                <div class="clear"></div>
+                <div class="tab tab-general visible">
+                    <div class="idm-tab-section">
+                        <div class="row">
+                            <div class="column third">
+                                <label for="class-no"><span class="required"></span>Class</label>
+                                <select name="class_no" id="class-no" data-source=".classNo">
+                                    <!-- Class populated from DB-->
+                                </select>
+                            </div>
+                            <div class="column third">
+                                <label for="class-type"><span class="required"></span>Type</label>
+								<span id="class-type" ></span>
+                            </div>
+                            <div class="column third">
+                                <label for="TM5">TM5</label>
+                                <input type="checkbox" name="statusTM" id="TM5" data-decorator="checkTm5" data-source=".statusTM" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="column third">
+                                <label for="start-effective-dt"><span class="required"></span>Start Effective Date</label>
+                                <input type="date" name="begin_effective_dt" id="start-effective-dt" style="width: 135px;" data-decorator="inputDateFormat" data-source=".beginEffectiveDt" />
+                            </div>
+                            <div class="column third">
+                                <!--label for="end-effective-dt"><span class="disabled-field">End Effective Date</span></label>
+                                <input type="date" name="end_effective_dt" id="end-effective-dt" style="width: 135px;" disabled="disabled" data-decorator="inputDateFormat" data-source=".endEffectiveDt" /-->
+                            </div>
+                            <div class="column third">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="idm-tab-section">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes" data-source=".notes" data-decorator="ckEditorNotes"></textarea>
+
+                        <!--<div  id="notes" data-source=".notes" data-decorator="rteNotes">-->
+                            <!--&lt;!&ndash;<p>example editor testing</p>&ndash;&gt;-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="tab tab-employee-notes">
+                    <label for="employee-notes">Employee Notes</label>
+                    <textarea id="employee-notes" name="employee-notes" data-source=".empNotes" data-decorator="ckEditorEmpNotes"></textarea>
+                </div>
+                <div class="tab tab-editor-notes">
+                    <label for="editor-notes">Editor Notes</label>
+                    <textarea id="editor-notes" name="editor-notes" data-source=".editorNotes" data-decorator="ckEditorEdNotes"></textarea>
+                </div>
+                <div class="tab tab-version-history">
+					<p class="no-versions">No version history exists for this record.</p>
+                    <table class="version-history-table">
+                        <thead>
+                            <tr>
+                                        <th><button class="nosort-record">Term ID</button></th>
+                                        <th><button class="nosort-record">Class</button></th>
+                                        <th><button class="nosort-record">Description</button></th>
+                                        <th><button class="nosort-record">Status</button></th>
+                                        <th><button class="nosort-record">Start Effective Date</button></th>
+                                        <th><button class="nosort-record">End Effective Date</button></th>
+                                        <th><button class="nosort-record">TM5</button></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>        
+                </div>
+                <div class="tab tab-revision-history">
+					<p class="no-revisions">There are no revisions to display.</p>
+                    <table class="revision-history-table">
+                        <thead>
+                            <tr>
+                                <th>Revision #</th>
+                                <th>What Changed</th>
+                                <th>Changes</th>
+                                <th>Change Date</th>
+                                <th>Changed By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="confirm-popup"></div>
+</div>
+
+<script>
+var userRoles = $('#user_id').data('roles'),
+    record,
+    $titlebar = $('.pn-src-modules-editor-tray-add-edit-record').parent().siblings('.pn-titlebar'), // We don't have access to the title bar in the snippet, so this is a workaround.
+    decor_options = {
+        decorators: {
+            startDateOnly: function (o, date) {
+                alert(" date "+ date);
+                if (pn.utils.isBlank(date)) {
+                    this.html('&nbsp;');
+                } else {
+                    var startDateString = pn.utils.getDateString(date, "MM/dd/yyyy");
+                    $(this).text(startDateString);
+                }
+            },
+            endDateOnly: function (o, date) {
+                if (pn.utils.isBlank(date)) {
+                    this.html('&nbsp;');
+                } else {
+                    var endDateString = pn.utils.getDateString(date, "MM/dd/yyyy");
+                    $(this).text(endDateString);
+                }
+            },
+            checkTm5: function (o,item) {
+                if( item == null) {
+                    snip.find('#TM5').prop('checked', false);
+                }
+                else if(item === 'N' ) {
+                    snip.find('#TM5').prop('checked', false);
+                }
+                else {
+                    snip.find('#TM5').prop('checked', true);
+                }
+            },
+            inputDateFormat: function (o, dt) {
+                if (pn.utils.isBlank(dt)) {
+                    $(this).val("");
+                } else {
+                    var dtStr = pn.utils.getDateString(dt, 'yyyy-MM-dd');
+                    $(this).val(dtStr);
+                }
+            },
+            stageDecorator: function (o, stage) {
+                var value = '';
+                if (stage === 'D'|| stage ==='Draft') {
+                    value = 'Draft';
+                } else if (stage === 'F'|| stage ==='Final') {
+                    value = 'Final';
+                } else if (stage === 'P'|| stage ==='Published') {
+                    value = 'Published';
+                } else if(stage ==='S'|| stage ==='Scheduled') {
+				    value='Scheduled';
+				}
+                $(this).html(value);
+            },
+
+            statusDecorator: function (o, status) {	   
+                var value = '';
+                if (status === 'A') {
+                    value = 'A - Added';
+		        } else if (status === 'X') {
+                    value = 'X - Example';
+                } else if (status === 'D') {
+                    value = 'D - Deleted';
+                } else if (status === 'M') {
+                    value = 'M - Modified';
+                }else if (status === 'R') {
+                    value = 'R - Deactivated';
+                }
+                $(this).html(value);
+            },
+
+            descriptionDecorator: function (o, description) {
+                if (description) {
+                    $(this).html(description.trim());
+                }
+            },
+
+            ckEditorNotes: function (o, val) {
+                if (CKEDITOR.instances['notes'].status === 'ready') {
+                    setTimeout( function () {
+                        CKEDITOR.instances['notes'].setData(val, {
+                            callback: function() {
+                                this.resetUndo();
+                            }
+                        });
+                    },250);
+                    console.log("notes1");
+                } else {
+                    CKEDITOR.instances['notes'].on('instanceReady',function() {
+                        setTimeout( function () {
+                            CKEDITOR.instances['notes'].setData(val, {
+                                callback: function() {
+                                    this.resetUndo();
+                                }
+                            });
+                        },250);
+                    });
+                    console.log("notes2");
+                }
+            },
+
+            ckEditorEmpNotes: function (o, val) {
+                if (CKEDITOR.instances['employee-notes'].status === 'ready') {
+                    setTimeout( function () {
+                        CKEDITOR.instances['employee-notes'].setData(val, {
+                            callback: function() {
+                                this.resetUndo();
+                            }
+                        });
+                    },250);
+                    console.log("empnotes1");
+                } else {
+                    CKEDITOR.instances['employee-notes'].on('instanceReady',function() {
+                        setTimeout( function () {
+                            CKEDITOR.instances['employee-notes'].setData(val, {
+                                callback: function() {
+                                    this.resetUndo();
+                                }
+                            });
+                        },250);
+                    });
+                    console.log("empnotes2");
+                }
+            },
+
+            ckEditorEdNotes: function (o, val) {
+                if (CKEDITOR.instances['editor-notes'].status === 'ready') {
+                    setTimeout( function () {
+                        CKEDITOR.instances['editor-notes'].setData(val, {
+                            callback: function() {
+                                this.resetUndo();
+                            }
+                        });
+                    },250);
+                    console.log("ednotes1");
+                } else {
+                    CKEDITOR.instances['editor-notes'].on('instanceReady',function() {
+                        setTimeout( function () {
+                            CKEDITOR.instances['editor-notes'].setData(val, {
+                                callback: function() {
+                                    this.resetUndo();
+                                }
+                            });
+                        },250);
+                    });
+                    console.log("ednotes2");
+                }
+            }
+        }
+    },
+    populateFields = function (record) {
+        pn.bindomatic.bind(record, snip.find(".idm-form"), decor_options);
+		populateType();
+    };
+
+
+// Populate the Class Dropdown
+
+var classMenu = [],type=[],
+	populateType = function () {
+		var index = ($("select#class-no option:selected").index() - 1);
+		
+		if (index!=-1) {
+			if (type[index]=='G') {
+				snip.find("#class-type").html("Goods");
+			} else if (type[index]=='S') {
+				snip.find("#class-type").html("Services");
+				
+			}
+		
+		}else {
+		   snip.find("#class-type").html("");
+		}
+	},
+    classMenuPromise = window.idm.get("/idm2-services/reference/classList").spinner('#class-no').done(function (data) {
+        classMenu.push('<option value="" selected="selected">', "Select a Class", '</option>');
+		
+        for (var key in data) {
+            if(data[key].classNo !== 'A' && data[key].classNo !== '200' && data[key].classNo !== 'B') {
+                classMenu.push('<option value="', data[key].classNo, '">', data[key].classNo + ' - ' + data[key].titleTx, '</option>');
+				type.push(data[key].goodsServicesCt);
+				
+            }
+        }
+
+        snip.find("select#class-no").html(classMenu.join(''));
+    });
+	$("select#class-no")[0].selectedIndex = 0;
+	snip.find("select#class-no").change(function (e,v){
+		populateType();
+	});
+
+var showVersionHistory = function () {
+    var $versionHistoryTable = snip.find('table.version-history-table'),
+    $noVersions = snip.find('.no-versions'),
+    $versionHistoryTableTbody = $versionHistoryTable.find('tbody');
+
+	snip.find('.tab-version-history').parents('li').show();
+	$noVersions.hide();
+	window.idm.get('/idm2-services/goodServiceTerms/history/' + record.id).spinner('table.version-history-table').done(function (data) {
+        if (data && data.length > 0) {
+            var count = 0;
+            $.each(data, function () {
+				if( this.termStatusCd !=='R'){
+                	var TMFive = '';
+                	if (this.statusTM === 'Y'){
+                		TMFive = 'T';
+                	}
+					
+					var $tr = $('<tr></tr>');
+
+                    $tr.append('<td class="word-break-class"><a href="#">' + this.goodsServicesTermIdTx +
+                                        '<div class="tooltip">'+
+                                            '<span class="tooltipTitle">'+
+                                                'IDML Record ' + this.goodsServicesTermIdTx +
+                                            '</span>' +
+                                            '<span class="tooltipBody">'+
+                                                '<div>'+
+                                                    '<span class="tooltip-text">Class: '+
+                                                        '<span>'
+                                                            + this.classNo +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                    '<span class="tooltip-text">Start Effective Date: '+
+                                                        '<span>'
+                                                            + pn.utils.getDateString(this.beginEffectiveDt, "TS") +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                    '<span class="tooltip-text">End Effective Date: '+
+                                                        '<span>'
+                                                            + pn.utils.getDateString(this.endEffectiveDt, "TS") +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                '</div>'+
+                                                '<div class="margin-15-top">'+
+                                                    '<span class="tooltip-text">Type: '+
+                                                        '<span>'
+                                                            + this.goodsServicesCt +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                    '<span class="tooltip-text">Status: '+
+                                                        '<span>'
+                                                            + this.termCt +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                    '<span class="tooltip-text">TM5: '+
+                                                        '<span>'
+                                                            + TMFive +
+                                                        '</span>'+
+                                                    '</span>'+
+                                                '</div>'+
+                                                '<div class="margin-15-top tooltip-text">Description:</div>'
+                                                    + this.descriptionTx +
+//                                                '<div class="margin-15-top tooltip-text">Notes:</div>'
+//                                                    + (this.notes || "No Notes available") +
+//                                                '<div class="margin-15-top tooltip-text">Employee Notes:</div>'
+//                                                    + (this.empNotes || "No Employee Notes available") +
+//                                                '<div class="margin-15-top tooltip-text">Editor Notes:</div>'
+//                                                    + (this.editorNotes || "No Editor Notes available") +
+                                            '</span>' +
+                                        '</div>' +
+                                    '</a>' +
+                                '</td>');
+//					$tr.append('<td>' + this.goodsServicesTermIdTx + '</td>');
+					$tr.append('<td class="word-break-class">' + this.classNo + '</td>');
+					$tr.append('<td class="word-break-class">' + this.descriptionTx + '</td>');
+					$tr.append('<td class="word-break-class">' + this.termCt + '</td>');
+					$tr.append('<td class="word-break-class">' + pn.utils.getDateString(this.beginEffectiveDt, "TS") + '</td>');
+					$tr.append('<td class="word-break-class">' + pn.utils.getDateString(this.endEffectiveDt, "TS") + '</td>');
+					$tr.append('<td class="word-break-class">' + TMFive + '</td>');
+					$versionHistoryTableTbody.append($tr);
+                    count = count + 1;
+				}
+            });
+
+            if (count === 0) {
+                $versionHistoryTable.hide();
+                $noVersions.show();
+            }
+
+		} else {
+		    $versionHistoryTable.hide();
+		    $noVersions.show();
+		}
+	});
+	
+};
+
+var showRevisionHistory = function () {
+    var $revisionHistoryTable = snip.find('table.revision-history-table'),
+            $noRevisions = snip.find('.no-revisions'),
+            $revisionHistoryTableTbody = $revisionHistoryTable.find('tbody');
+
+    snip.find('.tab-revision-history').parents('li').show();
+    $noRevisions.hide();
+    window.idm.get('/idm2-services/audit/revision/' + record.id).spinner('table.revision-history-table').done(function (data) {
+        $revisionHistoryTableTbody.empty();
+	    $revisionHistoryTable.show();
+
+        if (data && data.length > 0) {
+            $.each(data, function () {
+                var $tr = $('<tr></tr>');
+
+                $tr.append('<td>' + this.revisionNumber + '</td>');
+                $tr.append('<td>' + this.whatChanged + '</td>');
+                $tr.append('<td class="word-break-class">' + this.changeDesc + '</td>');
+                $tr.append('<td>' + pn.utils.getDateString(this.changeDate, "TS") + '</td>'); //pn.utils.getDateString(date, "D")
+                $tr.append('<td>' + this.changeBy + '</td>');
+
+                $revisionHistoryTableTbody.append($tr);
+            });
+        } else {
+            $revisionHistoryTable.hide();
+            $noRevisions.show();
+        }
+    });
+};
+
+var generateActionsMenu = function (record, type) {
+
+    $titlebar.find('.dropdown').remove();
+    // Populate the Actions Menu
+    var actionsMenu = '<div class="dropdown">' +
+            '<button class="right btn-primary dropdown-toggle" id="addOrEditRecordActionButton" type="button" aria-expanded="true">' +
+            'Actions' +
+            '<span class="icon-caret-down icn-graphic"></span>' +
+            '</button>' +
+            '<ul class="dropdown-menu" role="menu" aria-labelledby="addOrEditRecordActionButton">';
+			//debugger;
+
+    if(type === 'mod' || type === 'Convert-Example' || type === 'delete'  || type === 'no-version'){
+        actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-as-draft">Save as Draft</a></li>' +
+                '<li><a href="javascript:void(0)" class="save-as-final">Save as Final</a></li>';
+//		        '<li><a href="javascript:void(0)" class="schedule-for-publish">Schedule for Publish</a></li>';
+		}
+    if (type === 'clone') {
+        actionsMenu  +=
+                '<li class="before-spacer"><a href="javascript:void(0)" class="save-clone-as-draft">Save Cloned Record</a></li>';
+    }
+    else if (type === 'add' || type === 'create-example') {
+        actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-as-draft">Save as Draft</a></li>' +
+                '<li class="before-spacer"><a href="javascript:void(0)" class="save-as-final">Save as Final</a></li>';
+    }else if (type === 'cloneNew') {
+        actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-clone-as-new-id">Save Cloned Record</a></li>';
+    }else if (type === 'cloneExample') {
+        actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-clone-as-new-example">Save Cloned Example Record</a></li>';
+    }else if (type === 'deActivate') {
+		actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-de-activate">Save De-Activate</a></li>';
+    } else if (type === 'edit' ) {
+	    actionsMenu +=
+                '<li><a href="javascript:void(0)" class="save-as-draft">Save as Draft</a></li>' +
+                '<li><a href="javascript:void(0)" class="save-as-final">Save as Final</a></li>';
+
+        if (record.termStatusCd === 'F' || record.termStatusCd === 'Final') {
+            actionsMenu += '<li><a href="javascript:void(0)" class="schedule-for-publish">Schedule for Publish</a></li>';
+        }
+
+        actionsMenu +=
+                '<li><a href="javascript:void(0)" class="unselect">Unselect</a></li>' +
+                '<li><a href="javascript:void(0)" class="clone-as-new-record">Clone as New Record</a></li>' +
+                '<li class="before-spacer"><a href="javascript:void(0)" class="clone-as-new-example">Clone as New Example</a></li>';
+    }
+    actionsMenu +=
+            '<li><a href="javascript:void(0)" class="exit-without-save"><span class="icn-graphic icon-exit" title="Exit without Save"></span> Exit </a></li>' +
+            '</ul></div>';
+
+    // Add Actions Menu to Title Bar. We don't have access to the title bar in the snippet, so this is a workaround.
+    $titlebar.prepend(actionsMenu);
+    var $actionsMenu = $titlebar.find('.dropdown .dropdown-menu');
+  
+    
+    
+
+    /* EVENTS */
+    // Actions Menu for Record. We don't have access to the title bar in the snippet, so this is a workaround.
+    $titlebar.click(function (e) {
+        $actionsMenu.hide();
+    });
+    snip.click(function (e) {
+        $actionsMenu.hide();
+    });
+
+    $titlebar.find("#addOrEditRecordActionButton").click(function(e) { // Using $ instead of snip - title bar of popup seems to be outside scope of snip
+        $actionsMenu.toggle();
+        return false;
+    });
+
+    // Exit without Save
+    $titlebar.find(".exit-without-save").click(function(e) {
+        custom_alert({
+            title: 'Confirmation',
+            message: 'Exit without Saving will abandon changes that have been made. Do you wish to proceed?',
+            okText: 'Yes',
+            cancelText: 'No',
+            confirm: true,
+            successCallback: function () {
+                closePopup();
+            }
+        });
+    });
+
+    // Clone as Draft
+    $titlebar.find(".clone-as-new-record").click(function(e) {
+        custom_alert({
+            title: 'Confirmation',
+            message: 'You are about to clone the current record to a new record with new term id. <br/>Do you wish to proceed?',
+            okText: 'Yes',
+            cancelText: 'No',
+            confirm: true,
+            successCallback: function () {
+                closePopup();
+
+                pn.snip.load('modules/editor-tray/add-edit-record.html?type=clone&recordId=' + record.id, function (snippetContent) {
+                    snippetContent.popup({
+                        title: 'Clone As New Record',
+                        preventCloseOnClick : true,
+                        preventCloseOnEscape: true
+                    });
+                });
+            }
+        });
+    });
+
+    // Clone as New Example
+    $titlebar.find(".clone-as-new-example").click(function(e) {
+        custom_alert({
+            title: 'Confirmation',
+            message: 'You are about to clone the current record to a new example record with new term id. Do you wish to proceed?',
+            okText: 'Yes',
+            cancelText: 'No',
+            confirm: true,
+            successCallback: function () {
+                closePopup();
+
+                pn.snip.load('modules/editor-tray/add-edit-record.html?type=cloneExample&recordId=' + record.id, function (snippetContent) {
+                    snippetContent.popup({
+                        title: 'Clone As New Example',
+                        preventCloseOnClick : true,
+                        preventCloseOnEscape: true
+                    });
+                });
+            }
+        });
+    });
+
+    // Save Clone as Draft
+    $titlebar.find(".save-clone-as-draft").click(function(e) {
+        updateRecord({
+            stage: 'D',
+            successMessage: 'Successfully cloned the record as new record',
+            errorMessage: 'Error Saving Clone As New Record'
+        });
+    });
+    // Save Clone as New
+    $titlebar.find(".save-clone-as-new-id").click(function(e) {
+        updateRecord({
+            stage: 'D',
+            successMessage: 'Successfully cloned the record as new record',
+            errorMessage: 'Error Saving Clone As New record'
+        });
+    });
+    // Save Clone as New Example
+    $titlebar.find(".save-clone-as-new-example").click(function(e) {
+        updateRecord({
+            stage: 'D',
+            successMessage: 'Successfully cloned the record as new example record',
+            errorMessage: 'Error Saving Clone As New example record'
+        });
+    });
+    // Save de-activate
+    $titlebar.find(".save-de-activate").click(function(e) {
+        updateRecord({
+            stage: 'R',
+            successMessage: 'Successfully Saved De-activate',
+            errorMessage: 'Error Saving De-activate'
+        });
+    });
+	
+	//Unselect
+	
+    $titlebar.find(".unselect").click(function(e) {
+        custom_alert({
+            title: 'Confirmation',
+            message: 'You are about to unselect term ID ' +record.goodsServicesTermIdTx +'. Do you wish to proceed?',
+            okText: 'Yes',
+            cancelText: 'No',
+            confirm: true,
+            successCallback: function () {
+				updateRecord({
+					stage: 'U',
+					successMessage: 'Term Id ' +record.goodsServicesTermIdTx +' has successfully been unselected.',
+					errorMessage: 'Error unselect',
+					successCallback: function () {
+						closePopup();
+					}
+				});
+            }
+        });
+    });
+
+
+	
+    // Save as Draft
+    $titlebar.find(".save-as-draft").click(function(e) {
+        updateRecord({
+            stage: 'D',
+            successMessage: 'Successfully Saved As Draft',
+            errorMessage: 'Error Saving As Draft'
+        });
+    });
+
+    // Save as Final
+    $titlebar.find(".save-as-final").click(function(e) {
+	
+		updateRecord({
+			stage: 'F',
+            successMessage: 'Successfully Saved As Final',
+            errorMessage: 'Error Saving As Final'
+        });
+		
+    });
+    // Schedule For Publish
+    $titlebar.find(".schedule-for-publish").click(function(e) {
+	    updateRecord({
+            stage: 'S',
+            successMessage: 'Successfully Scheduled Record',
+            errorMessage: 'Error Scheduling For Publish'
+        });
+		
+    });
+};
+
+
+var originalTermId,originalTermIdNew,
+    originalRecordId;
+
+snip.find('.tab-revision-history').parents('li').hide();
+snip.find('.tab-version-history').parents('li').hide();
+if (snip.d.type === 'add') { // add mode
+    record = {
+        termCt: "A",
+        termStatusCd: "D"
+    };
+
+    generateActionsMenu(record, 'add');
+    populateFields(record);
+} else if (snip.d.type === 'create-example') { //create example mode from search results view dialog
+    record = {
+        termCt: "X",
+        termStatusCd: "D"
+    };
+    
+
+    generateActionsMenu(record, 'create-example');
+    populateFields(record);
+} else { // edit or clone mode
+    var recordId = snip.d.recordId;
+
+    window.idm.get("/idm2-services/goodServiceTerms/view/" + recordId).spinner('.idm-form').done(function (fetchedRecord) {
+        fetchedRecord.fkEditionNo = undefined;
+        fetchedRecord.fkPreviousGdsSrvcsTermId = undefined;
+        record = fetchedRecord;
+
+
+        if (snip.d.type === 'clone') {
+            originalTermId = record.goodsServicesTermIdTx;
+
+            record.termStatusCd = 'D';
+            record.termCt = 'A';
+            record.beginEffectiveDt =  undefined;
+            record.goodsServicesTermIdTx = undefined;
+            record.versionNum = undefined;
+            record.createdUserId = $('#user_id').attr('value');
+            record.id = undefined;
+        }else if (snip.d.type === 'cloneNew') {
+            originalTermIdNew = record.goodsServicesTermIdTx;
+
+            record.termStatusCd = 'D';
+            record.termCt = 'A';
+            record.beginEffectiveDt =  undefined;
+            record.goodsServicesTermIdTx = undefined;
+            record.versionNum = undefined;
+            record.createdUserId = $('#user_id').attr('value');
+            record.id = undefined;
+        } else if (snip.d.type === 'cloneExample') {
+            originalTermIdNew = record.goodsServicesTermIdTx;
+
+            record.termStatusCd = 'D';
+            record.termCt = 'X';
+            record.beginEffectiveDt =  undefined;
+            record.goodsServicesTermIdTx = undefined;
+            record.versionNum = undefined;
+            record.createdUserId = $('#user_id').attr('value');
+            record.id = undefined;
+        } else {
+            showRevisionHistory();
+            showVersionHistory();
+
+            if (snip.d.type === 'no-version' || record.actionFlag === 'no-versioning') {                //if correction with no versioning is clicked we disable some fields.
+                if (snip.d.type === 'no-version') {
+                    record.termStatusCd = 'D';
+                    record.actionFlag = 'no-versioning';
+                    originalRecordId = record.id;
+                    record.id = undefined;
+                }
+
+                if (record.termCt === 'D' || record.termCt === 'Deleted') {
+                    snip.find('#term-description').prop("disabled",true);
+                }
+
+                snip.find('#class-no,#TM5,#start-effective-dt').prop("disabled",true);
+                snip.find('#class-no,#start-effective-dt').prop("class","disabled-state"); //making all disabled items look alike.
+
+            } else if (snip.d.type === 'delete' || record.actionFlag === 'delete') {
+                if (snip.d.type === 'delete') {
+                    record.termStatusCd = 'D';
+                    record.termCt = 'D';
+                    record.actionFlag = 'delete';
+                    originalRecordId = record.id;
+                    record.id = undefined;
+                    setStartEffectiveDateToTomorrow();
+                }
+                record.createdUserId = $('#user_id').attr('value');
+                snip.find('#term-description,#class-no,#TM5').prop("disabled",true);
+
+            }else if (snip.d.type === 'deActivate' || record.actionFlag === 'de-activate') {
+                if (snip.d.type === 'deActivate') {
+                    record.termStatusCd = 'D';
+                    record.termCt = 'R';
+                    record.actionFlag = 'de-activate';
+                    originalRecordId = record.id;
+                    record.id = undefined;
+                }
+                record.createdUserId = $('#user_id').attr('value');
+                snip.find('#term-description,#TM5,#class-no,#start-effective-dt').prop("disabled",true);
+				snip.find('#class-no,#start-effective-dt').prop("class","disabled-state"); //making all disabled items look alike.
+                if (CKEDITOR.instances['editor-notes'].status === 'ready') {
+                    CKEDITOR.instances['notes'].setReadOnly(true);
+                    CKEDITOR.instances['employee-notes'].setReadOnly(true);
+                } else {
+                    CKEDITOR.instances['editor-notes'].on('instanceReady',function() {
+                        CKEDITOR.instances['notes'].setReadOnly(true);
+                        CKEDITOR.instances['employee-notes'].setReadOnly(true);
+                    });
+                }
+            } else if (snip.d.type === 'Convert-Example' || record.actionFlag === 'convert-example') {
+                if (snip.d.type === 'Convert-Example') {
+                    record.termStatusCd = 'D';
+                    record.termCt = 'X';
+                    record.actionFlag = 'convert-example';
+                    originalRecordId = record.id;
+                    record.id = undefined;
+                }
+                record.createdUserId = $('#user_id').attr('value');
+                snip.find('#term-description,#TM5,#class-no,#start-effective-dt').prop("disabled",true);
+                snip.find('#class-no,#start-effective-dt').prop("class","disabled-state"); //making all disabled items look alike.
+            } else if (snip.d.type === 'mod' || record.actionFlag === 'mod-reclass') {
+                if (snip.d.type === 'mod') {
+                    record.termStatusCd = 'D';
+                    record.actionFlag = 'mod-reclass';
+                    originalRecordId = record.id;
+                    record.id = undefined;
+                    setStartEffectiveDateToTomorrow();
+                }
+                if (record.termCt !== 'X') {
+                    record.termCt = 'M';
+                }
+                record.createdUserId = $('#user_id').attr('value');
+            }
+        }
+
+        generateActionsMenu(record, snip.d.type);
+	
+
+        classMenuPromise.done(function () {
+            populateFields(record);
+        }).fail(function () {
+            custom_alert({
+                title: 'Error',
+                message: 'Failed to load classes dropdown',
+                alert: true,
+                successCallback: function () {
+                    closePopup();
+                }
+            });
+        });
+    }).fail(function () {
+        custom_alert({
+            title: 'Error',
+            message: 'Failed to load record ID: ' + recordId,
+            alert: true,
+            successCallback: function () {
+                closePopup();
+            }
+        });
+    });
+}
+
+// Form Tabs
+snip.find('ul.tabs').on('click', 'li a', function (e) {
+    snip.find('ul.tabs li').removeClass('active');
+    $(this).parent().addClass('active');
+
+    var item = $(e.currentTarget).attr('class');
+    snip.find('div.tab').removeClass('visible');
+    snip.find('div.tab.' + item).addClass('visible');
+});
+
+var getFormRecord = function (record) {
+        var formRecord = {},
+            $form = snip.find('.idm-form'),
+            dynamicRecordProperties = [{
+                property: 'descriptionTx',
+                selector: 'textarea#term-description',
+                trim: true,
+                textarea: true
+            },{
+                property: 'classNo',
+                selector: 'select#class-no'
+            },{
+                property: 'goodsServicesCt',
+                selector: '#class-type'
+            },{
+                property: 'statusTM',
+                selector: 'input#TM5'
+            },{
+//                html: true,
+                editor: true,
+                property: 'notes',
+                selector: 'textarea#notes',
+                id: 'notes'
+                //textarea: true
+            },{
+                editor: true,
+                property: 'empNotes',
+                selector: 'textarea#employee-notes',
+                //textarea: true
+                id: 'employee-notes'
+            },{
+                editor: true,
+                property: 'editorNotes',
+                selector: 'textarea#editor-notes',
+                id: 'editor-notes'
+            },{
+                property: 'beginEffectiveDtStr',
+                selector: 'input#start-effective-dt'
+            }];
+
+        if (record.goodsServicesTermIdTx) {
+            formRecord.goodsServicesTermIdTx = record.goodsServicesTermIdTx;
+        }
+        if (record.versionNum) {
+            formRecord.versionNum = record.versionNum;
+        }
+
+        formRecord.termStatusCd = record.termStatusCd;
+        formRecord.termCt = record.termCt;
+
+        $.each(dynamicRecordProperties, function () {
+            var value;
+            if (this.editor) {
+                value =  CKEDITOR.instances[this.id].getData();
+            } else if (this.textarea) {
+                value = $form.find(this.selector).val();
+            } else {
+                value = $form.find(this.selector).val() || (this.html ? $form.find(this.selector).html() : $form.find(this.selector).text());
+            }
+
+
+            if (this.trim && value) {
+                value = value.trim();
+            }
+
+            if (value === 'on') {
+                value = $form.find(this.selector).prop('checked') ? 'Y' : 'N';
+            }
+
+            formRecord[this.property] = value;
+        });
+
+        return formRecord;
+    },
+    getRecordDiff = function (originalRecord, formRecord) {
+        var recordDiff = {},
+            properties = [
+                'descriptionTx',
+                'classNo',
+                'goodsServicesCt',
+                'statusTM',
+                'notes',
+                'empNotes',
+                'editorNotes',
+                'goodsServicesTermIdTx',
+				'versionNum',
+                'termStatusCd',
+                'termCt'
+            ],
+            dateProperties = [{
+                dateValue: 'beginEffectiveDt',
+                dateString: 'beginEffectiveDtStr'
+            }];
+
+        $.each(properties, function () {
+           if ((originalRecord[this] || formRecord[this]) && originalRecord[this] !== formRecord[this]) {
+               recordDiff[this] = formRecord[this];
+           }
+        });
+
+        $.each(dateProperties, function () {
+            if ((originalRecord[this.dateValue] || formRecord[this.dateString])) {
+                var originalRecordDateString = pn.utils.isBlank(originalRecord[this.dateValue]) ? '' :  pn.utils.getDateString(originalRecord[this.dateValue], 'yyyy-MM-dd');
+
+                if (originalRecordDateString !== formRecord[this.dateString]) {
+                    recordDiff[this.dateString] = formRecord[this.dateString];
+                }
+            }
+        });
+
+        return recordDiff;
+    },
+    validateFormRecord = function (formRecord) {
+        var validation = [],
+            valid = true,
+            requiredFields = [
+                { attribute: 'beginEffectiveDtStr', field: 'Start Effective Date', selector: '#start-effective-dt' },
+                { attribute: 'classNo', field: 'Class', selector: '#class-no' },
+                { attribute: 'descriptionTx', field: 'Description', selector: '#term-description' },
+                { attribute: 'goodsServicesCt', field: 'Class', selector: '#class-type' },
+                { attribute: 'notes', field: 'Notes', selector: 'textarea#notes', id : 'notes' },
+                { attribute: 'empNotes', field: 'Employee Notes', selector: 'textarea#employee-notes', id : 'employee-notes' },
+                { attribute: 'editorNotes', field: 'Editor Notes', selector: 'textarea#editor-notes', id : 'editor-notes' }
+            ],
+            $validationDiv = snip.find('.validation').empty(); // clear existing validations
+
+        $.each(requiredFields, function () {
+            if (!formRecord[this.attribute]) {
+                if (this.attribute !== 'notes' && this.attribute !== 'empNotes' && this.attribute !== 'editorNotes') {
+                    $validationDiv.append('<span>' + this.field + ' cannot be left blank</span>');
+                    valid = false;
+                }
+            } else {
+                var textRegEx = /^[^<>^%$#@]*$/;
+                if(this.attribute === "descriptionTx") {
+                    if (formRecord[this.attribute].length >= 2000) {
+                        $validationDiv.append('<span>' + this.field + ' cannot have more than 2000 characters</span>');
+                        valid = false;
+                    } else if (!textRegEx.test(formRecord[this.attribute])) {
+                        $validationDiv.append('<span>' + this.field + ' cannot have these invalid characters: "^<>%$#@"</span>');
+                        valid = false;
+                    }
+                } else if (this.attribute === 'notes' || this.attribute === 'empNotes' || this.attribute === 'editorNotes') {
+                    if(!textRegEx.test(CKEDITOR.instances[this.id].document.getBody().getText())) {
+                        $validationDiv.append('<span>' + this.field + ' cannot have these invalid characters: "^<>%$#@"</span>');
+                        valid = false;
+                    }
+                } else if (this.attribute === "beginEffectiveDtStr") {
+                    var dateRegEx = /((18|19|20)[0-9]{2}[\-](0[13578]|1[02])[\-](0[1-9]|[12][0-9]|3[01]))|((18|19|20)[0-9]{2}[\-](0[469]|11)[\-](0[1-9]|[12][0-9]|30))|((18|19|20)[0-9]{2}[\-](02)[\-](0[1-9]|1[0-9]|2[0-8]))|((((18|19|20)(04|08|[2468][048]|[13579][26]))|2000)[\-](02)[\-]29)/g;
+                    if (!dateRegEx.test(formRecord[this.attribute])) {
+                        $validationDiv.append('<span> Invalid Date or format </span>');
+                        $validationDiv.append("<span> In IE 10/11, Please enter  a valid date in 'yyyy-mm-dd' format </span>");
+                        $validationDiv.append("<span> In chrome, Please enter  a valid date in 'mm/dd/yyyy' format </span>");
+                        valid = false;
+                    }
+                }
+            }
+        });
+
+        if (valid) {
+            $validationDiv.hide();
+        } else {
+            $validationDiv.show();
+
+            custom_alert({
+                title: 'Validation Errors',
+                message: $('<span class="text-left"></span>').append($validationDiv.html()),
+                alert: true
+            });
+        }
+
+        return valid;
+    },
+   setStartEffectiveDateToTomorrow = function () {
+   		var currentDayOne = Date.today().add(+1).days() ;
+		var tomorrow = pn.utils.getDateString(currentDayOne, "yyyy-MM-dd");
+		record.beginEffectiveDt  = tomorrow;
+    },	
+    processValidationMessages = function (response) {
+        var $validationDiv = snip.find('.validation').empty(), // clear existing validations
+            parsedResponseObject = JSON.parse(response.responseText); // couldn't figure out how to set accept header in pneumatic jax function
+
+        if (parsedResponseObject.messages) {
+            $.each(parsedResponseObject.messages, function () {
+                $validationDiv.append('<span>' + this.text + '</span>');
+            });
+        } else {
+            $validationDiv.append('<span>An unknown error occurred.</span>');
+        }
+
+        custom_alert({
+            title: 'Validation Errors',
+            message: $('<span class="text-left"></span>').append($validationDiv.html()),
+            alert: true
+        });
+
+        $validationDiv.show();
+    },
+    updateRecord = function (options) {
+        var recordToSave = {},
+            formRecord = getFormRecord(record),
+            actionFlag = {
+                        actionFlag: record.actionFlag || ""
+            },
+            stage = {
+                termStatusCd: options.stage
+            };
+
+        if (!validateFormRecord(formRecord)) {
+            return;
+        }
+
+        var url = '/idm2-services/goodServiceTerms/idm2/rest/term',
+            method= 'POST';
+
+        if (record.id) {
+            method = 'PUT';
+            url += '/' + record.id;
+
+            $.extend(recordToSave, { id: record.id }, getRecordDiff(record, formRecord), stage);
+        } else {
+            $.extend(recordToSave, formRecord, stage);
+
+            if (originalTermId) {
+                url += '?originalTermId=' + originalTermId;
+            }  else if (originalTermIdNew) {
+                url += '?originalTermIdNew=' + originalTermIdNew;
+            } else if (originalRecordId) {
+                if (snip.d.type === 'Convert-Example') {
+                    url += '?convertToExample=' + originalRecordId;
+
+                    $.extend(recordToSave, {
+                        termCt: 'X'
+                    });
+                } else if (snip.d.type === 'mod') {
+                    url += '?modification=' + originalRecordId;
+                    if (record.termCt !== 'X') {
+                        $.extend(recordToSave, {
+                            termCt: 'M'
+                        });
+                    }
+                } else if (snip.d.type === 'delete') {
+                    url += '?delete=' + originalRecordId;
+
+                    $.extend(recordToSave, {
+                        termCt: 'D'
+                    });
+                } else if (snip.d.type === 'no-version') {
+
+                    url += '?noVersion=' + originalRecordId;
+
+                }else if (snip.d.type === 'deActivate') {
+
+                    url += '?deactivate=' + originalRecordId;
+
+                }
+            }
+        }
+
+        var $spinner = idm.spinner($('.dropdown .dropdown-menu'));
+        $.ajax({
+            url: url,
+            type: method,
+            data: JSON.stringify(recordToSave),
+            dataType: 'json',
+            contentType: 'application/json',
+            headers: { 'User-ID': $('#user_id').attr('value') }
+        }).done(function (response) {
+            $spinner.done();
+            setTimeout(function () {
+                $('#EditorTray').trigger('load:table');
+            }, 3000);
+            record.goodsServicesTermIdTx = response.goodsServicesTermIdTx;
+            record.versionNum = response.versionNum;			
+            record.beginEffectiveDt = response.beginEffectiveDt;
+            record.id = response.id;
+            record.actionFlag = response.actionFlag;
+			if (recordToSave.termStatusCd === 'X') {
+				recordToSave.termStatusCd = response.termStatusCd;
+			}
+
+            if (recordToSave.termStatusCd === 'S') {
+                closePopup();
+
+                // response get term ID
+                custom_alert({
+                    title: 'Confirmation',
+                    message: options.successMessage,
+                    alert: true,
+                    successCallback: function () {
+                        pn.snip.load('modules/editor-tray/view-record.html?referrer=editor&recordId=' + record.id, function (snippetContent) {
+                            snippetContent.popup({
+                                title: 'View Record',
+                                preventCloseOnClick : true,
+                                preventCloseOnEscape: true
+                            });
+                        });
+                    }
+                });
+            } else if (recordToSave.termStatusCd === 'U') {
+                closePopup();
+
+                // response get term ID
+                custom_alert({
+                    title: 'Confirmation',
+                    message: options.successMessage,
+                    alert: true
+                });
+            }else if (recordToSave.termStatusCd === 'R') {
+                closePopup();
+
+                // response get term ID
+                custom_alert({
+                    title: 'Confirmation',
+                    message: options.successMessage,
+                    alert: true
+                });
+            } else {
+
+
+                custom_alert({
+                    title: 'Confirmation',
+                    message: options.successMessage,
+                    alert: true,
+                    successCallback: function () {
+                        closePopup();
+
+                        pn.snip.load('modules/editor-tray/add-edit-record.html?type=edit&recordId=' + record.id, function (snippetContent) {
+                            snippetContent.popup({
+                                title: getPopupTitleByActionFlag(record.actionFlag),
+                                preventCloseOnClick : true,
+                                preventCloseOnEscape: true
+                            });
+                        });
+                    }
+                });
+            }
+
+            if (options.successCallback) {
+                options.successCallback();
+            }
+        }).fail(function (response) {
+            $spinner.done();
+            processValidationMessages(response);
+			
+			if (options.failCallback) {
+				options.failCallback();
+			}
+        });
+
+        $titlebar.find('.dropdown .dropdown-menu').hide();
+    };
+
+// Alert popup to show message
+function custom_alert(options) {
+    var theDiv = snip.find('.confirm-popup').clone(),
+        isAlert = options.alert || (typeof options.confirm !== 'undefined' && !options.confirm),
+        okText = options.okText ? options.okText : 'Ok',
+        cancelText = options.cancelText ? options.cancelText : 'Cancel',
+        $span = $("<span></span>").addClass('center'),
+        content;
+
+    theDiv.append($("<span></span>").addClass('center').html(options.message));
+
+    if (isAlert) {
+        $span.append($("<button />").addClass('btn btn-primary').attr('name', 'ok').text("Ok"));
+    } else {
+        $span.append($("<button />").addClass('btn btn-primary').attr('name', 'ok').text(okText));
+        $span.append($("<button />").addClass('btn').attr('name', 'cancel').text(cancelText));
+    }
+    theDiv.append($span);
+
+    content = theDiv.popup({
+        title: options.title,
+        preventCloseOnClick: true,
+        onsubmit: function (evt, result) {
+            if (result.ok) {
+                pn.popup.close(this);
+
+                if (typeof options.successCallback === 'function') {
+                    options.successCallback();
+                }
+            }
+        }
+    });
+
+    content.find('div.popup-bottom').hide();
+}
+
+// Helper
+function closePopup() {
+    pn.popup.close(snip);
+}
+
+
+//TODO: Need IE Fix for this conversion.
+//smartquotes vs straight quotes
+snip.find('textarea#term-description')
+        .on('keyup', function (e) {
+            var $currentTarget = $(e.currentTarget), value = $currentTarget.val(), position = e.currentTarget.selectionStart;
+            console.log("outside");
+            if (value.match(/"/g)) {
+                console.log("inside");
+                value = value.replace(/(^|\s)(")/g, "$1“"); // replace quotes that start a line or follow spaces with the front smart quote
+                value = value.replace(/"/g, "”"); // replace rest of quotes with the back smart quote
+                $currentTarget.val(value);
+                e.currentTarget.selectionEnd = position;
+            }
+        });
+
+//ckeditor
+CKEDITOR.replace('editor-notes', {
+    customConfig: '../../js/ckeditor_config.js'
+});
+
+CKEDITOR.replace('notes', {
+    customConfig: '../../js/ckeditor_config.js'
+});
+
+CKEDITOR.replace('employee-notes', {
+    customConfig: '../../js/ckeditor_config.js'
+    //skin: '../../ckeditor/skins/bootstrapck'
+});
+
+
+</script>
